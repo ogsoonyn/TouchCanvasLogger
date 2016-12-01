@@ -103,7 +103,7 @@ class Line: NSObject {
     
     // MARK: Drawing
     
-    func drawInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool) {
+    func drawInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool) {
         var maybePriorPoint: LinePoint?
         
         for point in points {
@@ -152,7 +152,12 @@ class Line: NSObject {
             CGContextBeginPath(context)
             
             CGContextMoveToPoint(context, priorLocation.x, priorLocation.y)
-            CGContextAddLineToPoint(context, location.x, location.y)
+            if(isLine){
+                CGContextAddLineToPoint(context, location.x, location.y)
+            }else{
+                CGContextAddRect(context, CGRect(origin: priorLocation, size: CGSize(width: 0.5, height: 0.5)))
+                CGContextAddLineToPoint(context, priorLocation.x + 0.25, priorLocation.y + 0.25)
+            }
             
             CGContextSetLineWidth(context, point.magnitude)
             CGContextStrokePath(context)
@@ -175,7 +180,7 @@ class Line: NSObject {
         }
     }
     
-    func drawFixedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, commitAll: Bool = false) {
+    func drawFixedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool, commitAll: Bool = false) {
         let allPoints = points
         var committing = [LinePoint]()
         
@@ -203,7 +208,7 @@ class Line: NSObject {
         
         let committedLine = Line()
         committedLine.points = committing
-        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation)
+        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isLine: isLine)
         
         
         if committedPoints.count > 0 {
@@ -215,10 +220,10 @@ class Line: NSObject {
         committedPoints.appendContentsOf(committing)
     }
     
-    func drawCommitedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool) {
+    func drawCommitedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool) {
         let committedLine = Line()
         committedLine.points = committedPoints
-        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation)
+        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isLine: isLine)
     }
     
     // MARK: Convenience
@@ -264,6 +269,13 @@ class Line: NSObject {
         return rect
     }
 
+    func myDebugDescription() -> String{
+        var ret = ""
+        points.forEach{
+                ret += ($0).myDebugDescription() + "\n"
+        }
+        return ret
+    }
 }
 
 
@@ -284,6 +296,7 @@ class LinePoint: NSObject  {
         static var Updated: PointType     { return self.init(rawValue: 1 << 3) }
         static var Cancelled: PointType   { return self.init(rawValue: 1 << 4) }
         static var Finger: PointType      { return self.init(rawValue: 1 << 5) }
+
     }
     
     // MARK: Properties
@@ -304,6 +317,49 @@ class LinePoint: NSObject  {
     
     var magnitude: CGFloat {
         return max(force, 0.025)
+    }
+    
+    // debug
+    func myDebugDescription() -> String {
+        var ret = ""
+        
+        ret += timestamp.description + ", "
+        ret += force.description + ", "
+        ret += location.x.description + ", " + location.y.description + ", "
+        ret += preciseLocation.x.description + ", " + preciseLocation.y.description + ", "
+        ret += type.rawValue.description + ", "
+        ret += altitudeAngle.description + ", "
+        ret += azimuthAngle.description + ", "
+        ret += pointType2String(pointType)
+        
+        return ret
+    }
+    
+
+    
+    func pointType2String(pointType: PointType) -> String{
+        var ret = ""
+        
+        if pointType.contains(.Cancelled) {
+            ret += " Cancelled"
+        }
+        else if pointType.contains(.NeedsUpdate) {
+            ret += " NeedsUpdate"
+        }
+        else if pointType.contains(.Updated) {
+            ret += " Updated"
+        }
+        else if pointType.contains(.Finger) {
+            ret += " Finger"
+        }
+        else if pointType.contains(.Coalesced) {
+            ret += " Coalesced"
+        }
+        else if pointType.contains(.Predicted) {
+            ret += " Predicted"
+        }
+    
+        return ret
     }
     
     // MARK: Initialization

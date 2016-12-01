@@ -13,6 +13,14 @@ class CanvasView: UIView {
     
     let isPredictionEnabled = UIDevice.currentDevice().userInterfaceIdiom == .Pad
     let isTouchUpdatingEnabled = true
+    var isLogging = false
+    
+    var isLine = false {
+        didSet {
+            needsFullRedraw = true
+            setNeedsDisplay()
+        }
+    }
     
     var usePreciseLocations = false {
         didSet {
@@ -87,7 +95,7 @@ class CanvasView: UIView {
             CGContextClearRect(frozenContext, bounds)
             for array in [finishedLines,lines] {
                 for line in array {
-                    line.drawCommitedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations)
+                    line.drawCommitedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
                 }
             }
             needsFullRedraw = false
@@ -100,8 +108,52 @@ class CanvasView: UIView {
         }
         
         for line in lines {
-            line.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations)
+            line.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
         }
+        
+        if(!isLogging && !isLine){
+            drawSupportLine()
+        }
+
+    }
+    
+    func drawText(text: NSString, pos: CGPoint){
+        // write text
+        text.drawAtPoint(pos,
+                         withAttributes: [NSFontAttributeName: UIFont.systemFontOfSize(42)])
+    }
+    
+    func drawSupportLine(){
+        let boundSize = UIScreen.mainScreen().bounds
+        let context = UIGraphicsGetCurrentContext()
+        
+        CGContextSetStrokeColorWithColor(context!, UIColor.darkGrayColor().CGColor)
+        
+        CGContextBeginPath(context!)
+        
+        CGContextMoveToPoint(context!, boundSize.width/2, 0)
+        CGContextAddLineToPoint(context!, boundSize.width/2, boundSize.height)
+        
+        CGContextMoveToPoint(context!, 0, boundSize.height/3)
+        CGContextAddLineToPoint(context!, boundSize.width, boundSize.height/3)
+        
+        CGContextMoveToPoint(context!, 0, boundSize.height/3*2)
+        CGContextAddLineToPoint(context!, boundSize.width, boundSize.height/3*2)
+
+        let pos1 = CGPointMake(boundSize.width/2, boundSize.height/3)
+        let pos2 = CGPointMake(boundSize.width/2, boundSize.height/3*2)
+        let font = UIFont.monospacedDigitSystemFontOfSize(42, weight: 0.5)
+        
+        NSString.init(format: "(%.1f, %.1f)", pos1.x, pos1.y).drawAtPoint(pos1,
+                withAttributes: [NSFontAttributeName: font])
+        NSString.init(format: "(%.1f, %.1f)", pos2.x, pos2.y).drawAtPoint(pos2,
+                withAttributes: [NSFontAttributeName: font])
+        
+        
+        //CGContextAddLineToPoint(context, location.x, location.y)
+        CGContextSetLineWidth(context!, 1)
+        CGContextStrokePath(context!)
+        
     }
     
     func setFrozenImageNeedsUpdate() {
@@ -120,6 +172,36 @@ class CanvasView: UIView {
     }
     
     // MARK: Convenience
+    func outputToFile(contents: String, filename: String){
+        let path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            + "/" + filename
+        
+        do {
+            try contents.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+        } catch {
+            // error
+        }
+    }
+    
+    func debugLog(filename: String){
+        //print(lines.count.description + "lines")
+        //print(finishedLines.count.description + "lines (finished)")
+        var message = "Timestamp, Force, LocationX, LocationY, PreciseLocationX, PreciseLocationY, Type, AltitudeAngle, AzimuthAngle, PointType\n"
+
+        let outFormatter = NSDateFormatter()
+        outFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let logFileName = outFormatter.stringFromDate(NSDate()) + "_"+filename+".csv"
+        
+        lines.forEach{
+            message += ($0).myDebugDescription() + "\n"
+        }
+        
+        finishedLines.forEach{
+            message += ($0).myDebugDescription() + "\n"
+        }
+        
+        outputToFile(message, filename: logFileName)
+    }
     
     func drawTouches(touches: Set<UITouch>, withEvent event: UIEvent?) {
         var updateRect = CGRect.null
@@ -265,13 +347,13 @@ class CanvasView: UIView {
     
     func commitLine(line: Line) {
         // Have the line draw any segments between points no longer being updated into the `frozenContext` and remove them from the line.
-        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations)
+        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
         setFrozenImageNeedsUpdate()
     }
     
     func finishLine(line: Line) {
         // Have the line draw any remaining segments into the `frozenContext`. All should be fixed now.
-        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, commitAll: true)
+        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine, commitAll: true)
         setFrozenImageNeedsUpdate()
         
         // Cease tracking this line now that it is finished.
