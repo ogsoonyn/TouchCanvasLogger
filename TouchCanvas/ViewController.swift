@@ -169,6 +169,11 @@ class ViewController: UIViewController {
         sender.selected = canvasView.usePreciseLocations
     }
     
+    @IBAction func showInfo(sender: UIButton) {
+        popupInformation()
+    }
+    
+    
     @IBAction func outputLogFile(sender: AnyObject) {
         // get log file name
         let alert = UIAlertController(title: "Notice", message: "Input log file name", preferredStyle: .Alert)
@@ -263,5 +268,23 @@ class ViewController: UIViewController {
             reticleView.actualAzimuthUnitVector = azimuthUnitVector
             reticleView.actualAltitudeAngle = altitudeAngle
         }
+    }
+    
+    func popupInformation(){
+        let version: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        let appname: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleDisplayName") as! String
+        let build: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        
+        // create popup
+        let alert = UIAlertController(
+            title: appname,
+            message: "Version: " + version + "\nBuild: " + build,
+            preferredStyle: .Alert)
+        
+        // add button to alert
+        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        
+        // show alert
+        presentViewController(alert, animated: true, completion: nil)
     }
 }
