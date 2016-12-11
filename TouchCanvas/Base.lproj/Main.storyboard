@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Touch Canvas-->
+        <!--Stylus Logger-->
         <scene sceneID="984-vW-kks">
             <objects>
                 <viewController id="1fl-Ij-fK1" customClass="ViewController" customModule="TouchCanvas" customModuleProvider="target" sceneMemberID="viewController">
@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Touch Canvas" id="2Kr-Ga-fIQ">
+                    <navigationItem key="navigationItem" title="Stylus Logger" id="2Kr-Ga-fIQ">
                         <leftBarButtonItems>
                             <barButtonItem id="qSA-1N-nxN">
                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hJ6-NM-qsO">
