@@ -272,7 +272,11 @@ class Line: NSObject {
     func myDebugDescription() -> String{
         var ret = ""
         points.forEach{
-                ret += ($0).myDebugDescription() + "\n"
+            ret += ($0).myDebugDescription() + "\n"
+        }
+        
+        committedPoints.forEach{
+            ret += ($0).myDebugDescription() + "\n"
         }
         return ret
     }
