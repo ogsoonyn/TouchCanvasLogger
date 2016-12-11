@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         toolBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
         
         // initialize [Coodinate Viewer]
-        naviLabel.frame = CGRectMake(0,10,320,25) // Magic Number!!
+        naviLabel.frame = CGRectMake(0,10,320,30) // Magic Number!!
         naviLabel.textColor = UIColor.blackColor()
         naviLabel.backgroundColor = UIColor.clearColor()
         naviLabel.textAlignment = NSTextAlignment.Center
