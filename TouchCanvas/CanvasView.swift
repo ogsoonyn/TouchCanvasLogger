@@ -133,8 +133,9 @@ class CanvasView: UIView {
     func drawAssistLines(){
         let boundSize = UIScreen.mainScreen().bounds
         let context = UIGraphicsGetCurrentContext()
+        let color = UIColor(red: 19/255, green: 144/255, blue: 255/255, alpha: 1.0)
         
-        CGContextSetStrokeColorWithColor(context!, UIColor.darkGrayColor().CGColor)
+        CGContextSetStrokeColorWithColor(context!, color.CGColor)
         
         CGContextBeginPath(context!)
         
@@ -151,10 +152,11 @@ class CanvasView: UIView {
         let pos2 = CGPointMake(boundSize.width/2, boundSize.height/3*2)
         let font = UIFont.monospacedDigitSystemFontOfSize(42, weight: 0.5)
         
-        NSString.init(format: "(%.1f, %.1f)", pos1.x, pos1.y).drawAtPoint(pos1,
-                withAttributes: [NSFontAttributeName: font])
-        NSString.init(format: "(%.1f, %.1f)", pos2.x, pos2.y).drawAtPoint(pos2,
-                withAttributes: [NSFontAttributeName: font])
+        
+        NSString.init(format: "(%.1f, %.1f)", pos1.x, pos1.y)
+            .drawAtPoint(pos1, withAttributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: color])
+        NSString.init(format: "(%.1f, %.1f)", pos2.x, pos2.y)
+            .drawAtPoint(pos2, withAttributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: color])
         
         
         //CGContextAddLineToPoint(context, location.x, location.y)
