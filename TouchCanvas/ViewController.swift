@@ -176,8 +176,8 @@ class ViewController: UIViewController {
     
     @IBAction func outputLogFile(sender: AnyObject) {
         // get log file name
-        let alert = UIAlertController(title: "Notice", message: "Input log file name", preferredStyle: .Alert)
-        let saveAction = UIAlertAction(title: "Done", style: .Default){ (action: UIAlertAction!) -> Void in
+        let alert = UIAlertController(title: "ログ取得", message: "ログファイル名を指定してStartを押すと、ログ取得を開始します。\nログ取得を終了するには、ホームボタンを押してください。", preferredStyle: .Alert)
+        let saveAction = UIAlertAction(title: "Start", style: .Default){ (action: UIAlertAction!) -> Void in
             // show text via console
             self.logFileName = alert.textFields![0].text!
             //self.label.text = textField.text
