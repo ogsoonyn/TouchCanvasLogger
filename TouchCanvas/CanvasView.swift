@@ -15,7 +15,7 @@ class CanvasView: UIView {
     let isTouchUpdatingEnabled = true
     var isLogging = false
     
-    var isLine = false {
+    var isPoint = false {
         didSet {
             needsFullRedraw = true
             setNeedsDisplay()
@@ -95,7 +95,7 @@ class CanvasView: UIView {
             CGContextClearRect(frozenContext, bounds)
             for array in [finishedLines,lines] {
                 for line in array {
-                    line.drawCommitedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
+                    line.drawCommitedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isPoint: isPoint)
                 }
             }
             needsFullRedraw = false
@@ -108,10 +108,10 @@ class CanvasView: UIView {
         }
         
         for line in lines {
-            line.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
+            line.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isPoint: isPoint)
         }
         
-        if(!isLogging && !isLine){
+        if(!isLogging && isPoint){
             drawSupportLine()
         }
 
@@ -347,13 +347,13 @@ class CanvasView: UIView {
     
     func commitLine(line: Line) {
         // Have the line draw any segments between points no longer being updated into the `frozenContext` and remove them from the line.
-        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine)
+        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isPoint: isPoint)
         setFrozenImageNeedsUpdate()
     }
     
     func finishLine(line: Line) {
         // Have the line draw any remaining segments into the `frozenContext`. All should be fixed now.
-        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isLine: isLine, commitAll: true)
+        line.drawFixedPointsInContext(frozenContext, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isPoint: isPoint, commitAll: true)
         setFrozenImageNeedsUpdate()
         
         // Cease tracking this line now that it is finished.

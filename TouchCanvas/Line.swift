@@ -103,7 +103,7 @@ class Line: NSObject {
     
     // MARK: Drawing
     
-    func drawInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool) {
+    func drawInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isPoint: Bool) {
         var maybePriorPoint: LinePoint?
         
         for point in points {
@@ -152,11 +152,11 @@ class Line: NSObject {
             CGContextBeginPath(context)
             
             CGContextMoveToPoint(context, priorLocation.x, priorLocation.y)
-            if(isLine){
-                CGContextAddLineToPoint(context, location.x, location.y)
-            }else{
+            if(isPoint){
                 CGContextAddRect(context, CGRect(origin: priorLocation, size: CGSize(width: 0.5, height: 0.5)))
                 CGContextAddLineToPoint(context, priorLocation.x + 0.25, priorLocation.y + 0.25)
+            }else{
+                CGContextAddLineToPoint(context, location.x, location.y)
             }
             
             CGContextSetLineWidth(context, point.magnitude)
@@ -180,7 +180,7 @@ class Line: NSObject {
         }
     }
     
-    func drawFixedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool, commitAll: Bool = false) {
+    func drawFixedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isPoint: Bool, commitAll: Bool = false) {
         let allPoints = points
         var committing = [LinePoint]()
         
@@ -208,7 +208,7 @@ class Line: NSObject {
         
         let committedLine = Line()
         committedLine.points = committing
-        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isLine: isLine)
+        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isPoint: isPoint)
         
         
         if committedPoints.count > 0 {
@@ -220,10 +220,10 @@ class Line: NSObject {
         committedPoints.appendContentsOf(committing)
     }
     
-    func drawCommitedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isLine: Bool) {
+    func drawCommitedPointsInContext(context: CGContext, isDebuggingEnabled: Bool, usePreciseLocation: Bool, isPoint: Bool) {
         let committedLine = Line()
         committedLine.points = committedPoints
-        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isLine: isLine)
+        committedLine.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocation, isPoint: isPoint)
     }
     
     // MARK: Convenience

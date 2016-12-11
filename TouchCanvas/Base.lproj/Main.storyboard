@@ -59,7 +59,7 @@
                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="RXo-vC-JHU">
                                     <rect key="frame" x="134" y="7" width="30" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="Line"/>
+                                    <state key="normal" title="Dot"/>
                                     <connections>
                                         <action selector="toggleLine:" destination="1fl-Ij-fK1" eventType="touchUpInside" id="lJk-eH-yqt"/>
                                     </connections>

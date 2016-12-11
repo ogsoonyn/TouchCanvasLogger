@@ -115,8 +115,8 @@ class ViewController: UIViewController {
     
     // MARK: Actions
     @IBAction func toggleLine(sender: UIButton) {
-        canvasView.isLine = !canvasView.isLine
-        sender.selected = canvasView.isLine
+        canvasView.isPoint = !canvasView.isPoint
+        sender.selected = canvasView.isPoint
 
     }
 
