@@ -27,9 +27,9 @@
                         <leftBarButtonItems>
                             <barButtonItem id="qSA-1N-nxN">
                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hJ6-NM-qsO">
-                                    <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                    <rect key="frame" x="20" y="7" width="50" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="Dbg"/>
+                                    <state key="normal" title="Debug"/>
                                     <connections>
                                         <action selector="toggleDebugDrawing:" destination="1fl-Ij-fK1" eventType="touchUpInside" id="t8c-e6-AyL"/>
                                     </connections>
@@ -37,29 +37,20 @@
                             </barButtonItem>
                             <barButtonItem id="wXG-vC-Joh">
                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="L1h-l0-eDS">
-                                    <rect key="frame" x="58" y="7" width="30" height="30"/>
+                                    <rect key="frame" x="78" y="7" width="55" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="Pre"/>
+                                    <state key="normal" title="Precise"/>
                                     <connections>
                                         <action selector="toggleUsePreciseLocations:" destination="1fl-Ij-fK1" eventType="touchUpInside" id="EZF-y7-LDD"/>
                                     </connections>
                                 </button>
                             </barButtonItem>
-                            <barButtonItem id="qhe-dI-OMn">
-                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hPn-U6-KBP">
-                                    <rect key="frame" x="96" y="7" width="30" height="30"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="Log"/>
-                                    <connections>
-                                        <action selector="outputLogFile:" destination="1fl-Ij-fK1" eventType="touchUpInside" id="iOV-C0-OJZ"/>
-                                    </connections>
-                                </button>
-                            </barButtonItem>
                             <barButtonItem style="plain" id="rDe-VP-COT">
                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="RXo-vC-JHU">
-                                    <rect key="frame" x="134" y="7" width="30" height="30"/>
+                                    <rect key="frame" x="141" y="7" width="40" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="Dot"/>
+                                    <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="15"/>
+                                    <state key="normal" title="Line"/>
                                     <connections>
                                         <action selector="toggleLine:" destination="1fl-Ij-fK1" eventType="touchUpInside" id="lJk-eH-yqt"/>
                                     </connections>
@@ -91,7 +82,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Me2-NX-iEx">
+                    <toolbar key="toolbar" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Me2-NX-iEx">
                         <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>

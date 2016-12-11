@@ -22,6 +22,13 @@ class CanvasView: UIView {
         }
     }
     
+    var showAssistLines = false {
+        didSet {
+            needsFullRedraw = true
+            setNeedsDisplay()
+        }
+    }
+    
     var usePreciseLocations = false {
         didSet {
             needsFullRedraw = true
@@ -111,8 +118,8 @@ class CanvasView: UIView {
             line.drawInContext(context, isDebuggingEnabled: isDebuggingEnabled, usePreciseLocation: usePreciseLocations, isPoint: isPoint)
         }
         
-        if(!isLogging && isPoint){
-            drawSupportLine()
+        if(!isLogging && showAssistLines){
+            drawAssistLines()
         }
 
     }
@@ -123,7 +130,7 @@ class CanvasView: UIView {
                          withAttributes: [NSFontAttributeName: UIFont.systemFontOfSize(42)])
     }
     
-    func drawSupportLine(){
+    func drawAssistLines(){
         let boundSize = UIScreen.mainScreen().bounds
         let context = UIGraphicsGetCurrentContext()
         

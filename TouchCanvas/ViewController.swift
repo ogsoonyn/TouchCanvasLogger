@@ -33,17 +33,42 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         canvasView.addSubview(reticleView)
+        
+        // initialize toolbar
+        initToolBar()
+        
+        // observe notification event
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dumpLogAndQuit), name: "HomeKeyPressed", object: nil)
+    }
+    
+    
+    private var toolBar : UIToolbar!
+    
+    func initToolBar(){
+        // Set toolbar size
+        toolBar = UIToolbar(frame: CGRectMake(0, self.view.bounds.size.height - 44, self.view.bounds.size.width, 44.0))
+
+        // Set toolbar pos
+        toolBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
+        
+        // initialize [Coodinate Viewer]
         naviLabel.frame = CGRectMake(0,10,320,25) // Magic Number!!
         naviLabel.textColor = UIColor.blackColor()
         naviLabel.backgroundColor = UIColor.clearColor()
         naviLabel.textAlignment = NSTextAlignment.Center
-        naviLabel.font = UIFont.monospacedDigitSystemFontOfSize(24, weight: 0.5)
+        naviLabel.font = UIFont.monospacedDigitSystemFontOfSize(26, weight: 0.5)
         naviLabel.text = "(Pos.x, Pos.y) : Force"
         
-        naviItem.titleView = naviLabel
-        
-        // observe notification event
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dumpLogAndQuit), name: "HomeKeyPressed", object: nil)
+        let spacer = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+
+        // initialize Buttons
+        let assistBtn = UIBarButtonItem(title: "Assist Line", style: .Plain, target: self, action: #selector(toggleShowAssistLine))
+        let logBtn = UIBarButtonItem(title: "Start Log", style: .Plain, target: self, action: #selector(outputLogFile))
+
+        let itemLabel = UIBarButtonItem(customView: naviLabel)
+
+        toolBar.items = [itemLabel, spacer, assistBtn, logBtn]
+        canvasView.addSubview(toolBar)
     }
     
     // MARK: Touch Handling
@@ -116,10 +141,18 @@ class ViewController: UIViewController {
     // MARK: Actions
     @IBAction func toggleLine(sender: UIButton) {
         canvasView.isPoint = !canvasView.isPoint
-        sender.selected = canvasView.isPoint
-
+        //sender.selected = canvasView.isPoint
+        if(canvasView.isPoint){
+            sender.setTitle("Point", forState: .Normal)
+        }else{
+            sender.setTitle("Line", forState: .Normal)
+        }
     }
-
+    
+    @IBAction func toggleShowAssistLine(sender: UIButton){
+        canvasView.showAssistLines = !canvasView.showAssistLines
+        sender.selected = canvasView.showAssistLines
+    }
 
     @IBAction func clearView(sender: UIBarButtonItem) {
         canvasView.clear()
@@ -146,7 +179,9 @@ class ViewController: UIViewController {
 
             // hide navigation bar
             self.navigationController?.setNavigationBarHidden(true, animated: true)
-        
+            //self.navigationController?.setToolbarHidden(true, animated: true)
+            self.toolBar.hidden = true
+
             // clear log
             self.canvasView.clear()
         
@@ -187,6 +222,8 @@ class ViewController: UIViewController {
         
         // show navigation bar
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+        //self.navigationController?.setToolbarHidden(false, animated: true)
+        self.toolBar.hidden = false
         
         canvasView.isLogging = false
     }
