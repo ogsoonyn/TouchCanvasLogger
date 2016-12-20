@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         toolBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
         
         // initialize [Coodinate Viewer]
-        naviLabel.frame = CGRectMake(0,10,320,30) // Magic Number!!
+        naviLabel.frame = CGRectMake(0,10,500,30) // Magic Number!!
         naviLabel.textColor = UIColor.blackColor()
         naviLabel.backgroundColor = UIColor.clearColor()
         naviLabel.textAlignment = NSTextAlignment.Center
@@ -234,18 +234,29 @@ class ViewController: UIViewController {
     }
     
     func touchToString(touch: UITouch) -> String{
-        var point = touch.locationInView(touch.view)
+        var ret = ""
         if(canvasView.usePreciseLocations){
-            point = touch.preciseLocationInView(touch.view)
+            let point = touch.preciseLocationInView(touch.view)
+            ret = pointToString(point, digit: 4) + " : " + forceToString(touch, digit: 6)
+        }else{
+            let point = touch.locationInView(touch.view)
+            ret = pointToString(point, digit: 2) + " : " + forceToString(touch, digit: 3)
         }
-        return pointToString(point) + " : " + String.init(format: "%.2f", touch.force)
+        return ret
     }
     
-    func pointToString(point: CGPoint) -> String{
-        return String.init(format: "(%.2f, %.2f)", point.x, point.y)
+    func forceToString(touch: UITouch, digit: Int) -> String{
+
+        let format = "%." + digit.description + "f"
+        return String.init(format: format, touch.force)
     }
     
     
+    func pointToString(point: CGPoint, digit: Int) -> String{
+        let format = "(%." + digit.description + "f, %." + digit.description + "f)"
+        return String.init(format: format, point.x, point.y)
+    }
+
     func updateReticleViewWithTouch(touch: UITouch?, event: UIEvent?, isPredicted: Bool = false) {
         guard let touch = touch where touch.type == .Stylus else { return }
         
