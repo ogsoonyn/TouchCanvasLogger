@@ -120,6 +120,7 @@ class CanvasView: UIView {
         
         if(!isLogging && showAssistLines){
             drawAssistLines()
+            drawAssistScaleMark()
         }
 
     }
@@ -163,6 +164,35 @@ class CanvasView: UIView {
         CGContextSetLineWidth(context!, 1)
         CGContextStrokePath(context!)
         
+    }
+    
+    func drawAssistScaleMark(){
+        let boundSize = UIScreen.mainScreen().bounds
+        let context = UIGraphicsGetCurrentContext()
+        let color = UIColor(red: 19/255, green: 144/255, blue: 255/255, alpha: 0.7)
+        
+        CGContextSetStrokeColorWithColor(context!, color.CGColor)
+        CGContextBeginPath(context!)
+
+        let firstpos = 3.25 as CGFloat
+        let intv = 2.5 as CGFloat
+        var h = firstpos as CGFloat
+
+        while h < bounds.size.height {
+            var len = 70 as CGFloat
+            if (h-firstpos)%(intv*10) == 0 {
+                len *= 1.5
+            }else if (h-firstpos)%(intv*5) == 0{
+                len *= 1.25
+            }
+
+            CGContextMoveToPoint(context!, boundSize.width/2, h)
+            CGContextAddLineToPoint(context!, boundSize.width/2 - len, h)
+            h += intv
+        }
+        
+        CGContextSetLineWidth(context!, 0.5)
+        CGContextStrokePath(context!)
     }
     
     func setFrozenImageNeedsUpdate() {
