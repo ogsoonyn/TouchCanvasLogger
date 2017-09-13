@@ -13,9 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // send home-key event to ViewController
-        NSNotificationCenter.defaultCenter().postNotificationName("HomeKeyPressed", object: self)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "HomeKeyPressed"), object: self)
         
     }
 }

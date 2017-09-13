@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     let reticleView: ReticleView = {
         let view = ReticleView(frame: CGRect.null)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.hidden = true
+        view.isHidden = true
         
         return view
     }()
@@ -38,32 +38,32 @@ class ViewController: UIViewController {
         initToolBar()
         
         // observe notification event
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dumpLogAndQuit), name: "HomeKeyPressed", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dumpLogAndQuit), name: NSNotification.Name(rawValue: "HomeKeyPressed"), object: nil)
     }
     
     
-    private var toolBar : UIToolbar!
+    fileprivate var toolBar : UIToolbar!
     
     func initToolBar(){
         // Set toolbar size
-        toolBar = UIToolbar(frame: CGRectMake(0, self.view.bounds.size.height - 44, self.view.bounds.size.width, 44.0))
+        toolBar = UIToolbar(frame: CGRect(x: 0, y: self.view.bounds.size.height - 44, width: self.view.bounds.size.width, height: 44.0))
 
         // Set toolbar pos
         toolBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
         
         // initialize [Coodinate Viewer]
-        naviLabel.frame = CGRectMake(0,10,500,30) // Magic Number!!
-        naviLabel.textColor = UIColor.blackColor()
-        naviLabel.backgroundColor = UIColor.clearColor()
-        naviLabel.textAlignment = NSTextAlignment.Center
-        naviLabel.font = UIFont.monospacedDigitSystemFontOfSize(26, weight: 0.5)
+        naviLabel.frame = CGRect(x: 0,y: 10,width: 500,height: 30) // Magic Number!!
+        naviLabel.textColor = UIColor.black
+        naviLabel.backgroundColor = UIColor.clear
+        naviLabel.textAlignment = NSTextAlignment.center
+        naviLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 26, weight: 0.5)
         naviLabel.text = "(Pos.x, Pos.y) : Force"
         
-        let spacer = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
         // initialize Buttons
-        let assistBtn = UIBarButtonItem(title: "Assist Line", style: .Plain, target: self, action: #selector(toggleShowAssistLine))
-        let logBtn = UIBarButtonItem(title: "Start Log", style: .Plain, target: self, action: #selector(outputLogFile))
+        let assistBtn = UIBarButtonItem(title: "Assist Line", style: .plain, target: self, action: #selector(toggleShowAssistLine))
+        let logBtn = UIBarButtonItem(title: "Start Log", style: .plain, target: self, action: #selector(outputLogFile))
 
         let itemLabel = UIBarButtonItem(customView: naviLabel)
 
@@ -73,33 +73,33 @@ class ViewController: UIViewController {
     
     // MARK: Touch Handling
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         canvasView.drawTouches(touches, withEvent: event)
         //naviItem.title = touchToString(touches.first!)
         naviLabel.text = touchToString(touches.first!)
         
         if visualizeAzimuth {
             for touch in touches {
-                if touch.type == .Stylus {
-                    reticleView.hidden = false
+                if touch.type == .stylus {
+                    reticleView.isHidden = false
                     updateReticleViewWithTouch(touch, event: event)
                 }
             }
         }
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         canvasView.drawTouches(touches, withEvent: event)
         //naviItem.title = touchToString(touches.first!)
         naviLabel.text = touchToString(touches.first!)
         
         if visualizeAzimuth {
             for touch in touches {
-                if touch.type == .Stylus {
+                if touch.type == .stylus {
                     updateReticleViewWithTouch(touch, event: event)
                     
                     // Use the last predicted touch to update the reticle.
-                    guard let predictedTouch = event?.predictedTouchesForTouch(touch)?.last else { return }
+                    guard let predictedTouch = event?.predictedTouches(for: touch)?.last else { return }
                     
                     updateReticleViewWithTouch(predictedTouch, event: event, isPredicted: true)
                 }
@@ -107,7 +107,7 @@ class ViewController: UIViewController {
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         canvasView.drawTouches(touches, withEvent: event)
         canvasView.endTouches(touches, cancel: false)
         //naviItem.title = touchToString(touches.first!)
@@ -115,69 +115,69 @@ class ViewController: UIViewController {
         
         if visualizeAzimuth {
             for touch in touches {
-                if touch.type == .Stylus {
-                    reticleView.hidden = true
+                if touch.type == .stylus {
+                    reticleView.isHidden = true
                 }
             }
         }
     }
     
-    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
 		canvasView.endTouches(touches, cancel: true)
         
         if visualizeAzimuth {
             for touch in touches {
-                if touch.type == .Stylus {
-                    reticleView.hidden = true
+                if touch.type == .stylus {
+                    reticleView.isHidden = true
                 }
             }
         }
     }
     
-    override func touchesEstimatedPropertiesUpdated(touches: Set<UITouch>) {
+    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
         canvasView.updateEstimatedPropertiesForTouches(touches)
     }
     
     // MARK: Actions
-    @IBAction func toggleLine(sender: UIButton) {
+    @IBAction func toggleLine(_ sender: UIButton) {
         canvasView.isPoint = !canvasView.isPoint
         //sender.selected = canvasView.isPoint
         if(canvasView.isPoint){
-            sender.setTitle("Point", forState: .Normal)
+            sender.setTitle("Point", for: UIControlState())
         }else{
-            sender.setTitle("Line", forState: .Normal)
+            sender.setTitle("Line", for: UIControlState())
         }
     }
     
-    @IBAction func toggleShowAssistLine(sender: UIButton){
+    @IBAction func toggleShowAssistLine(_ sender: UIButton){
         canvasView.showAssistLines = !canvasView.showAssistLines
-        sender.selected = canvasView.showAssistLines
+        sender.isSelected = canvasView.showAssistLines
     }
 
-    @IBAction func clearView(sender: UIBarButtonItem) {
+    @IBAction func clearView(_ sender: UIBarButtonItem) {
         canvasView.clear()
     }
     
-    @IBAction func toggleDebugDrawing(sender: UIButton) {
+    @IBAction func toggleDebugDrawing(_ sender: UIButton) {
         canvasView.isDebuggingEnabled = !canvasView.isDebuggingEnabled
         visualizeAzimuth = !visualizeAzimuth
-        sender.selected = canvasView.isDebuggingEnabled
+        sender.isSelected = canvasView.isDebuggingEnabled
     }
     
-    @IBAction func toggleUsePreciseLocations(sender: UIButton) {
+    @IBAction func toggleUsePreciseLocations(_ sender: UIButton) {
         canvasView.usePreciseLocations = !canvasView.usePreciseLocations
-        sender.selected = canvasView.usePreciseLocations
+        sender.isSelected = canvasView.usePreciseLocations
     }
     
-    @IBAction func showInfo(sender: UIButton) {
+    @IBAction func showInfo(_ sender: UIButton) {
         popupInformation()
     }
     
     
-    @IBAction func outputLogFile(sender: AnyObject) {
+    @IBAction func outputLogFile(_ sender: AnyObject) {
         // get log file name
-        let alert = UIAlertController(title: "ログ取得", message: "ログファイル名を指定してStartを押すと、ログ取得を開始します。\nログ取得を終了するには、ホームボタンを押してください。", preferredStyle: .Alert)
-        let saveAction = UIAlertAction(title: "Start", style: .Default){ (action: UIAlertAction!) -> Void in
+        let alert = UIAlertController(title: "ログ取得", message: "ログファイル名を指定してStartを押すと、ログ取得を開始します。\nログ取得を終了するには、ホームボタンを押してください。", preferredStyle: .alert)
+        let saveAction = UIAlertAction(title: "Start", style: .default){ (action: UIAlertAction!) -> Void in
             // show text via console
             self.logFileName = alert.textFields![0].text!
             //self.label.text = textField.text
@@ -185,7 +185,7 @@ class ViewController: UIViewController {
             // hide navigation bar
             self.navigationController?.setNavigationBarHidden(true, animated: true)
             //self.navigationController?.setToolbarHidden(true, animated: true)
-            self.toolBar.hidden = true
+            self.toolBar.isHidden = true
 
             // clear log
             self.canvasView.clear()
@@ -193,27 +193,27 @@ class ViewController: UIViewController {
             self.canvasView.isLogging = true
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Default){ (action: UIAlertAction!) -> Void in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default){ (action: UIAlertAction!) -> Void in
         }
         
         // add textfield to UIAlertController
-        alert.addTextFieldWithConfigurationHandler{ (textfield:UITextField!) -> Void in
+        alert.addTextField{ (textfield:UITextField!) -> Void in
         }
         
         alert.addAction(saveAction)
         alert.addAction(cancelAction)
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
         
     }
     
     // MARK: Rotation
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return false
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return .portrait
        //return [.LandscapeLeft, .LandscapeRight]
     }
     
@@ -228,43 +228,43 @@ class ViewController: UIViewController {
         // show navigation bar
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         //self.navigationController?.setToolbarHidden(false, animated: true)
-        self.toolBar.hidden = false
+        self.toolBar.isHidden = false
         
         canvasView.isLogging = false
     }
     
-    func touchToString(touch: UITouch) -> String{
+    func touchToString(_ touch: UITouch) -> String{
         var ret = ""
         if(canvasView.usePreciseLocations){
-            let point = touch.preciseLocationInView(touch.view)
+            let point = touch.preciseLocation(in: touch.view)
             ret = pointToString(point, digit: 4) + " : " + forceToString(touch, digit: 6)
         }else{
-            let point = touch.locationInView(touch.view)
+            let point = touch.location(in: touch.view)
             ret = pointToString(point, digit: 2) + " : " + forceToString(touch, digit: 3)
         }
         return ret
     }
     
-    func forceToString(touch: UITouch, digit: Int) -> String{
+    func forceToString(_ touch: UITouch, digit: Int) -> String{
 
         let format = "%." + digit.description + "f"
         return String.init(format: format, touch.force)
     }
     
     
-    func pointToString(point: CGPoint, digit: Int) -> String{
+    func pointToString(_ point: CGPoint, digit: Int) -> String{
         let format = "(%." + digit.description + "f, %." + digit.description + "f)"
         return String.init(format: format, point.x, point.y)
     }
 
-    func updateReticleViewWithTouch(touch: UITouch?, event: UIEvent?, isPredicted: Bool = false) {
-        guard let touch = touch where touch.type == .Stylus else { return }
+    func updateReticleViewWithTouch(_ touch: UITouch?, event: UIEvent?, isPredicted: Bool = false) {
+        guard let touch = touch, touch.type == .stylus else { return }
         
-        reticleView.predictedDotLayer.hidden = !isPredicted
-        reticleView.predictedLineLayer.hidden = !isPredicted
+        reticleView.predictedDotLayer.isHidden = !isPredicted
+        reticleView.predictedLineLayer.isHidden = !isPredicted
         
-        let azimuthAngle = touch.azimuthAngleInView(view)
-        let azimuthUnitVector = touch.azimuthUnitVectorInView(view)
+        let azimuthAngle = touch.azimuthAngle(in: view)
+        let azimuthUnitVector = touch.azimuthUnitVector(in: view)
         let altitudeAngle = touch.altitudeAngle
         
         if isPredicted {
@@ -273,7 +273,7 @@ class ViewController: UIViewController {
             reticleView.predictedAltitudeAngle = altitudeAngle
         }
         else {
-            let location = touch.preciseLocationInView(view)
+            let location = touch.preciseLocation(in: view)
             reticleView.center = location
             reticleView.actualAzimuthAngle = azimuthAngle
             reticleView.actualAzimuthUnitVector = azimuthUnitVector
@@ -282,20 +282,20 @@ class ViewController: UIViewController {
     }
     
     func popupInformation(){
-        let version: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
-        let appname: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleDisplayName") as! String
-        let build: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let appname: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         
         // create popup
         let alert = UIAlertController(
             title: appname,
             message: "Version: " + version + "\nBuild: " + build,
-            preferredStyle: .Alert)
+            preferredStyle: .alert)
         
         // add button to alert
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
         // show alert
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 }
