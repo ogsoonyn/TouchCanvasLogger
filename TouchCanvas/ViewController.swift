@@ -45,6 +45,15 @@ class ViewController: UIViewController {
     fileprivate var toolBar : UIToolbar!
     
     func initToolBar(){
+        var fontSize = CGFloat(26.0)
+        var frameSize = CGRect(x:0, y:10, width: 500, height: 30)
+        
+
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            fontSize = CGFloat(18.0)
+            frameSize = CGRect(x: 0, y: 10, width: 240, height: 30)
+        }
+        
         // Set toolbar size
         toolBar = UIToolbar(frame: CGRect(x: 0, y: self.view.bounds.size.height - 44, width: self.view.bounds.size.width, height: 44.0))
 
@@ -52,18 +61,18 @@ class ViewController: UIViewController {
         toolBar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
         
         // initialize [Coodinate Viewer]
-        naviLabel.frame = CGRect(x: 0,y: 10,width: 500,height: 30) // Magic Number!!
+        naviLabel.frame = frameSize
         naviLabel.textColor = UIColor.black
         naviLabel.backgroundColor = UIColor.clear
         naviLabel.textAlignment = NSTextAlignment.center
-        naviLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 26, weight: 0.5)
+        naviLabel.font = UIFont.monospacedDigitSystemFont(ofSize: fontSize, weight: 0.2)
         naviLabel.text = "(Pos.x, Pos.y) : Force"
         
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
         // initialize Buttons
-        let assistBtn = UIBarButtonItem(title: "Assist Line", style: .plain, target: self, action: #selector(toggleShowAssistLine))
-        let logBtn = UIBarButtonItem(title: "Start Log", style: .plain, target: self, action: #selector(outputLogFile))
+        let assistBtn = UIBarButtonItem(title: "Assist", style: .plain, target: self, action: #selector(toggleShowAssistLine))
+        let logBtn = UIBarButtonItem(title: "Log", style: .plain, target: self, action: #selector(outputLogFile))
 
         let itemLabel = UIBarButtonItem(customView: naviLabel)
 

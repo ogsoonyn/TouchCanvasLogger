@@ -127,8 +127,7 @@ class CanvasView: UIView {
     
     func drawText(_ text: NSString, pos: CGPoint){
         // write text
-        text.draw(at: pos,
-                         withAttributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 42)])
+        text.draw(at: pos, withAttributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 42)])
     }
     
     func drawAssistLines(){
@@ -151,7 +150,7 @@ class CanvasView: UIView {
 
         let pos1 = CGPoint(x: boundSize.width/2, y: boundSize.height/3)
         let pos2 = CGPoint(x: boundSize.width/2, y: boundSize.height/3*2)
-        let font = UIFont.monospacedDigitSystemFont(ofSize: 42, weight: 0.5)
+        let font = UIFont.monospacedDigitSystemFont(ofSize: 21, weight: 0.5)
         
         
         NSString.init(format: "(%.1f, %.1f)", pos1.x, pos1.y)
